@@ -2,25 +2,18 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# Page Config
+# Page Configurations
 st.set_page_config(page_title="CSV Data Visualizer", layout="wide")
 
 # Title
 st.title("📊Data Visualizer")
 
-# Function to get data from session state
+# Function to get the stored data and column types from session state
 def get_data():
     df_ = st.session_state.df
     categorical_cols_ = st.session_state.categorical_cols
     numerical_cols_ = st.session_state.numerical_cols
     return df_, numerical_cols_, categorical_cols_
-
-# Initialize session state if not already done
-if "df" not in st.session_state:
-    st.session_state.df = pd.DataFrame()
-    st.session_state.numerical_cols = []
-    st.session_state.categorical_cols = []
-    st.session_state.graphs = []  # Holds the types of graphs
 
 # Function to add a new graph type
 def add_graph():
@@ -106,13 +99,42 @@ def generate_graph(graph_type, graph_index,filtered_df):
             st.warning("Select at least two numerical columns for a heatmap.")
 
 
-# Upload CSV
-uploaded_file = st.file_uploader("📂 Upload your CSV file", type=["csv"])
+if "df" not in st.session_state:
+    st.session_state.df = pd.DataFrame()
+    st.session_state.numerical_cols = []
+    st.session_state.categorical_cols = []
+    st.session_state.graphs = []
+
+
+uploaded_file = st.file_uploader("📂 Upload your data file", type=["csv", "xlsx", "xls", "json", "tsv", "txt"])
 
 if uploaded_file is not None:
-    st.session_state.df = pd.read_csv(uploaded_file)
-    st.session_state.numerical_cols = st.session_state.df.select_dtypes(include=["number"]).columns.tolist()
-    st.session_state.categorical_cols = st.session_state.df.select_dtypes(include=["object", "category"]).columns.tolist()
+    file_name = uploaded_file.name.lower()
+
+    try:
+        if file_name.endswith(".csv"):
+            df = pd.read_csv(uploaded_file)
+        elif file_name.endswith((".xlsx", ".xls")):
+            df = pd.read_excel(uploaded_file)
+        elif file_name.endswith(".json"):
+            df = pd.read_json(uploaded_file)
+        elif file_name.endswith(".tsv"):
+            df = pd.read_csv(uploaded_file, sep="\t")
+        elif file_name.endswith(".txt"):
+            df = pd.read_csv(uploaded_file, delimiter=",")  # or adjust delimiter as needed
+        else:
+            st.error("Unsupported file format.")
+            st.stop()
+
+        # Store in session state
+        st.session_state.df = df
+        st.session_state.numerical_cols = df.select_dtypes(include=["number"]).columns.tolist()
+        st.session_state.categorical_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+
+    except Exception as e:
+        st.error(f"Error loading file: {e}")
+        st.stop()
+
 
 if not st.session_state.df.empty:
     # Display uploaded data preview
