@@ -6,7 +6,7 @@ import plotly.express as px
 st.set_page_config(page_title="CSV Data Visualizer", layout="wide")
 
 # Title
-st.title("📊 CSV Data Visualizer")
+st.title("📊Data Visualizer")
 
 # Function to get data from session state
 def get_data():
