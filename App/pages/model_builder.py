@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import accuracy_score, mean_squared_error
+from sklearn.metrics import accuracy_score, root_mean_squared_error
 
 
 st.set_page_config(page_title="Model Builder", layout="wide")
@@ -51,7 +51,7 @@ if target:
     if is_classification:
         st.write(f"**Accuracy:** {accuracy_score(y_test, y_pred):.2f}")
     else:
-        st.write(f"**RMSE:** {mean_squared_error(y_test, y_pred, squared=False):.2f}")
+        st.write(f"**RMSE:** {root_mean_squared_error(y_test, y_pred):.2f}")
 
     # Show predictions
     st.subheader("🔮 Predictions on Test Set")

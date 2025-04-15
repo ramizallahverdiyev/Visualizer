@@ -258,8 +258,8 @@ if not st.session_state.df.empty:
         add_graph()
         st.rerun()
 
-st.write("---")
-if st.button("🚀 Build a Machine Learning Model"):
-    st.session_state.modeling_trigger = True
-    st.switch_page("pages/Model_Builder.py")  # This assumes you're using multipage Streamlit
+    st.write("---")
+    if st.button("🚀 Build a Machine Learning Model"):
+        st.session_state.modeling_trigger = True
+        st.switch_page("pages/model_builder.py")  # This assumes you're using multipage Streamlit
 
