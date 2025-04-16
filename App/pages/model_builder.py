@@ -17,7 +17,7 @@ if "df" not in st.session_state or st.session_state.df.empty:
 df = st.session_state.df.copy()
 
 # Target selection
-target = st.selectbox("🎯 Select Target Column", df.columns)
+target = st.selectbox("🎯 Select Target Column ", df.columns)
 
 if target:
     X = df.drop(columns=[target])
